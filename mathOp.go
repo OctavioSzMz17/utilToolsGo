@@ -6,7 +6,7 @@ import (
 )
 
 // ConvertToInt
-func convertToInt(input string) (int, error) {
+func ConvertToInt(input string) (int, error) {
 	number, err := strconv.Atoi(input)
 	if err != nil {
 		return 0, fmt.Errorf("error al convertir el número: %v", err)
