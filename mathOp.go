@@ -16,32 +16,32 @@ func ConvertToInt(input string) (int, error) {
 
 // This function adds two numbers and returns the result
 func Add(a, b string) int {
-	num1, _ := convertToInt(a)
-	num2, _ := convertToInt(b)
+	num1, _ := ConvertToInt(a)
+	num2, _ := ConvertToInt(b)
 
 	return num1 + num2
 }
 
 // This function less two numbers and returns the result
 func Less(a, b string) int {
-	num1, _ := convertToInt(a)
-	num2, _ := convertToInt(b)
+	num1, _ := ConvertToInt(a)
+	num2, _ := ConvertToInt(b)
 
 	return num1 - num2
 }
 
 // This function multiply two numbers and returns the result
 func Multiply(a, b string) int {
-	num1, _ := convertToInt(a)
-	num2, _ := convertToInt(b)
+	num1, _ := ConvertToInt(a)
+	num2, _ := ConvertToInt(b)
 
 	return num1 * num2
 }
 
 // This function divide two numbers and returns the result
 func Divide(a, b string) int {
-	num1, _ := convertToInt(a)
-	num2, _ := convertToInt(b)
+	num1, _ := ConvertToInt(a)
+	num2, _ := ConvertToInt(b)
 
 	return num1 / num2
 }
