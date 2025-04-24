@@ -1,9 +1,9 @@
-
 package DBDriver
 
 import (
 	"database/sql"
 	"log"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -23,11 +23,4 @@ func InitDB(GBD, user, pass, host, port, dbname string) {
 	if err != nil {
 		log.Fatal("No se puede establecer la conexión con la base de datos:", err)
 	}
-}
-
-// Inserta un nuevo usuario en una tabla específica
-func InsertUser(table, usr, pass string) error {
-	// Usamos el nombre de la tabla proporcionado por el usuario
-	_, err := DB.Exec("INSERT INTO "+table+" (usr, pass) VALUES (?, ?)", usr, pass)
-	return err
 }
