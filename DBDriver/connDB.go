@@ -1,5 +1,5 @@
 
-package utilToolsGo
+package DBDriver
 
 import (
 	"database/sql"

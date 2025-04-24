@@ -1,4 +1,4 @@
-package utilToolsGo
+package Readers
 
 import (
 	"bufio"
