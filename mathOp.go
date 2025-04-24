@@ -56,6 +56,6 @@ func Sqrt(a string) int {
 func Pow(a, b string) int {
 	num1, _ := ConvertToInt(a)
 	num2, _ := ConvertToInt(b)	
-	
+	 
 	return int(math.Pow(float64(num1), float64(num2)))
 }
