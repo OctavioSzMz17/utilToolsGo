@@ -1,4 +1,4 @@
-module github.com/OctavioSzMz17/utilToolsGo
+module github.com/OctavioSzMz17/utilToolsGo/v2
 
 go 1.24.1
 
