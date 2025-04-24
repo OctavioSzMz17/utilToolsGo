@@ -3,6 +3,7 @@ package utilToolsGo
 import (
 	"fmt"
 	"strconv"
+	"math"
 )
 
 // ConvertToInt
@@ -44,4 +45,10 @@ func Divide(a, b string) int {
 	num2, _ := ConvertToInt(b)
 
 	return num1 / num2
+}
+
+func Sqrt(a string) int {
+	num1, _ := ConvertToInt(a)
+
+	return int(math.Sqrt(float64(num1)))
 }
