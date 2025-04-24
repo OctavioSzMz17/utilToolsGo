@@ -52,3 +52,10 @@ func Sqrt(a string) int {
 
 	return int(math.Sqrt(float64(num1)))
 }
+
+func Pow(a, b string) int {
+	num1, _ := ConvertToInt(a)
+	num2, _ := ConvertToInt(b)	
+	
+	return int(math.Pow(float64(num1), float64(num2)))
+}
