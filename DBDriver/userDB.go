@@ -3,6 +3,7 @@ package DBDriver
 import (
 	"database/sql"
 	"fmt"
+	util "github.com/OctavioSzMz17/utilToolsGo/v2/MathOperations"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -13,46 +14,43 @@ type User struct {
 	Password string
 }
 
-// Crear un nuevo usuario con contraseña encriptada
-/*func CreateUser(table, username, password string) error {
+
+func CreateUser(table []string, idField, username, password string) error {
 	// Encriptar la contraseña
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return fmt.Errorf("error encriptando contraseña: %v", err)
 	}
 
-	query := fmt.Sprintf("INSERT INTO %s (username, password) VALUES (?, ?)", table)
-	_, err = DB.Exec(query, username, hashedPassword)
+	id, _ := util.ConvertToInt(idField)
+
+	query := fmt.Sprintf("INSERT INTO %s (%s, %s, %s) VALUES (?, ?)", table[0], table[1], table[2], table[3])
+	_, err = DB.Exec(query, id, username, hashedPassword)
 	if err != nil {
 		return fmt.Errorf("error creando usuario: %v", err)
 	}
 	return nil
-}*/
+}
 
-	func CreateUser(table []string, username, password string) error {
-		// Encriptar la contraseña
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-		if err != nil {
-			return fmt.Errorf("error encriptando contraseña: %v", err)
-		}
-
-		query := fmt.Sprintf("INSERT INTO %s (%s, %s) VALUES (?, ?)", table[0], table[1], table[2])
-		_, err = DB.Exec(query, username, hashedPassword)
-		if err != nil {
-			return fmt.Errorf("error creando usuario: %v", err)
-		}
-		return nil
+// Verificar si las credenciales del usuario son correctas	
+func AuthenticateUser(table []string, username, password string) (bool, error) {
+	// Obtener el usuario
+	user, err := GetUserByUsername(table[0], username)
+	if err != nil {
+		return false, err
 	}
 
+	// Comparar la contraseña ingresada con la almacenada en la base de datos
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		if err == bcrypt.ErrMismatchedHashAndPassword {
+			return false, fmt.Errorf("contraseña incorrecta")
+		}
+		return false, fmt.Errorf("error al autenticar usuario: %v", err)
+	}
 
-
-
-
-
-
-
-
-
+	return true, nil
+}
 
 // Obtener usuario por nombre de usuario
 func GetUserByUsername(table, username string) (User, error) {
@@ -68,26 +66,6 @@ func GetUserByUsername(table, username string) (User, error) {
 		return user, fmt.Errorf("error obteniendo usuario: %v", err)
 	}
 	return user, nil
-}
-
-// Verificar si las credenciales del usuario son correctas
-func AuthenticateUser(table, username, password string) (bool, error) {
-	// Obtener el usuario
-	user, err := GetUserByUsername(table, username)
-	if err != nil {
-		return false, err
-	}
-
-	// Comparar la contraseña ingresada con la almacenada en la base de datos
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	if err != nil {
-		if err == bcrypt.ErrMismatchedHashAndPassword {
-			return false, fmt.Errorf("contraseña incorrecta")
-		}
-		return false, fmt.Errorf("error al autenticar usuario: %v", err)
-	}
-
-	return true, nil
 }
 
 // Obtener usuario por ID
