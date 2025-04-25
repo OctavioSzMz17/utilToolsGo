@@ -14,7 +14,7 @@ type User struct {
 }
 
 // Crear un nuevo usuario con contraseña encriptada
-func CreateUser(table, username, password string) error {
+/*func CreateUser(table, username, password string) error {
 	// Encriptar la contraseña
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -27,7 +27,32 @@ func CreateUser(table, username, password string) error {
 		return fmt.Errorf("error creando usuario: %v", err)
 	}
 	return nil
-}
+}*/
+
+	func CreateUser(table []string, username, password string) error {
+		// Encriptar la contraseña
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		if err != nil {
+			return fmt.Errorf("error encriptando contraseña: %v", err)
+		}
+
+		query := fmt.Sprintf("INSERT INTO %s (%s, %s) VALUES (?, ?)", table[0], table[1], table[2])
+		_, err = DB.Exec(query, username, hashedPassword)
+		if err != nil {
+			return fmt.Errorf("error creando usuario: %v", err)
+		}
+		return nil
+	}
+
+
+
+
+
+
+
+
+
+
 
 // Obtener usuario por nombre de usuario
 func GetUserByUsername(table, username string) (User, error) {
