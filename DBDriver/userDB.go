@@ -24,7 +24,7 @@ func CreateUser(table []string, idField, username, password string) error {
 
 	id, _ := util.ConvertToInt(idField)
 
-	query := fmt.Sprintf("INSERT INTO %s (%s, %s, %s) VALUES (?, ?)", table[0], table[1], table[2], table[3])
+	query := fmt.Sprintf("INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", table[0], table[1], table[2], table[3])
 	_, err = DB.Exec(query, id, username, hashedPassword)
 	if err != nil {
 		return fmt.Errorf("error creando usuario: %v", err)
@@ -32,7 +32,7 @@ func CreateUser(table []string, idField, username, password string) error {
 	return nil
 }
 
-// Verificar si las credenciales del usuario son correctas	
+// Verificar si las credenciales del usuario son correctas	s
 func AuthenticateUser(table []string, username, password string) (bool, error) {
 	// Obtener el usuario
 	user, err := GetUserByUsername(table[0], username)
