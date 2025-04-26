@@ -35,7 +35,7 @@ func CreateUser(table []string, idField, username, password string) error {
 // Verificar si las credenciales del usuario son correctas	s
 func AuthenticateUser(table []string, username, password string) (bool, error) {
 	// Obtener el usuario
-	user, err := GetUserByUsername(table[0], username)
+	user, err := GetUserByUsername(table, username)
 	if err != nil {
 		return false, err
 	}
@@ -53,9 +53,9 @@ func AuthenticateUser(table []string, username, password string) (bool, error) {
 }
 
 // Obtener usuario por nombre de usuario
-func GetUserByUsername(table, username string) (User, error) {
+func GetUserByUsername(table []string, username string) (User, error) {
 	var user User
-	query := fmt.Sprintf("SELECT id, username, password FROM %s WHERE username = ?", table)
+	query := fmt.Sprintf("SELECT %s, %s, %s FROM %s WHERE %s = ?", table[1], table[2], table[3], table[0], table[2])
 	row := DB.QueryRow(query, username)
 
 	err := row.Scan(&user.ID, &user.Username, &user.Password)
