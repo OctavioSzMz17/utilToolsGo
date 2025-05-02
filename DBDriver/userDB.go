@@ -3,7 +3,7 @@ package DBDriver
 import (
 	"database/sql"
 	"fmt"
-	util "github.com/OctavioSzMz17/utilToolsGo/v2/MathOperations"
+	util "github.com/OctavioSzMz17/utilToolsGo/v3/MathOperations"
 	"golang.org/x/crypto/bcrypt"
 )
 
