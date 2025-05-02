@@ -14,7 +14,6 @@ type User struct {
 	Password string
 }
 
-
 func CreateUser(table []string, idField, username, password string) error {
 	// Encriptar la contraseña
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -24,9 +23,12 @@ func CreateUser(table []string, idField, username, password string) error {
 
 	id, _ := util.ConvertToInt(idField)
 
-	query := fmt.Sprintf("INSERT INTO %s (%s, %s, %s) VALUES ($1, $2, $3)", table[0], table[1], table[2], table[3])
+	query := fmt.Sprintf("INSERT INTO %s (%s, %s, %s) VALUES (%s, %s, %s)",
+	table[0], table[1], table[2], table[3],
+	getPlaceholder(1), getPlaceholder(2), getPlaceholder(3))
 
-	_, err = DB.Exec(query, id, username, hashedPassword)
+
+	_, err = DB.Exec(query, id, username, string(hashedPassword))
 	if err != nil {
 		return fmt.Errorf("error creando usuario: %v", err)
 	}
@@ -56,7 +58,7 @@ func AuthenticateUser(table []string, username, password string) (bool, error) {
 // Obtener usuario por nombre de usuario
 func GetUserByUsername(table []string, username string) (User, error) {
 	var user User
-	query := fmt.Sprintf("SELECT %s, %s, %s FROM %s WHERE %s = $1", table[1], table[2], table[3], table[0], table[2])
+	query := fmt.Sprintf("SELECT %s, %s, %s FROM %s WHERE %s = %s", table[1], table[2], table[3], table[0], table[2], getPlaceholder(1))
 
 	row := DB.QueryRow(query, username)
 
@@ -73,7 +75,7 @@ func GetUserByUsername(table []string, username string) (User, error) {
 // Obtener usuario por ID
 func GetUserByID(table string, id int) (User, error) {
 	var user User
-	query := fmt.Sprintf("SELECT id, username, password FROM %s WHERE id = $1", table)
+	query := fmt.Sprintf("SELECT id, username, password FROM %s WHERE id = %s", table, getPlaceholder(1))
 	row := DB.QueryRow(query, id)
 
 	err := row.Scan(&user.ID, &user.Username, &user.Password)
@@ -94,7 +96,8 @@ func UpdateUser(table string, id int, username, password string) error {
 		return fmt.Errorf("error encriptando contraseña: %v", err)
 	}
 
-	query := fmt.Sprintf("UPDATE %s SET username = ?, password = ? WHERE id = ?", table)
+	query := fmt.Sprintf("UPDATE %s SET username = %s, password = %s WHERE id = %s", table,
+		getPlaceholder(1), getPlaceholder(2), getPlaceholder(3))
 	_, err = DB.Exec(query, username, hashedPassword, id)
 	if err != nil {
 		return fmt.Errorf("error actualizando usuario: %v", err)
@@ -104,7 +107,8 @@ func UpdateUser(table string, id int, username, password string) error {
 
 // Eliminar usuario
 func DeleteUser(table string, id int) error {
-	query := fmt.Sprintf("DELETE FROM %s WHERE id = ?", table)
+	query := fmt.Sprintf("DELETE FROM %s WHERE id = %s", table, getPlaceholder(1))
+
 	_, err := DB.Exec(query, id)
 	if err != nil {
 		return fmt.Errorf("error eliminando usuario: %v", err)
@@ -142,7 +146,9 @@ func UpdatePassword(table string, id int, newPassword string) error {
 		return fmt.Errorf("error encriptando nueva contraseña: %v", err)
 	}
 
-	query := fmt.Sprintf("UPDATE %s SET password = ? WHERE id = ?", table)
+	query := fmt.Sprintf("UPDATE %s SET password = %s WHERE id = %s", table,
+	getPlaceholder(1), getPlaceholder(2))
+
 	_, err = DB.Exec(query, hashedPassword, id)
 	if err != nil {
 		return fmt.Errorf("error actualizando contraseña: %v", err)

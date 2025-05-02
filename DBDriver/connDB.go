@@ -1,6 +1,7 @@
 package DBDriver
 
 import (
+    "fmt"
     "database/sql"
     "log"
     _ "github.com/go-sql-driver/mysql"
@@ -9,22 +10,23 @@ import (
 
 // DB es la variable global de conexión
 var DB *sql.DB
-
+var DBType string
 // Inicializa la conexión a la base de datos MySQL
 func InitDBMYSQL(GBD, user, pass, host, port, dbname string) {
-    var err error
-    DSN := user + ":" + pass + "@tcp(" + host + ":" + port + ")/" + dbname
-    DB, err = sql.Open(GBD, DSN)
-    if err != nil {
-        log.Fatal("Error al conectar con la base de datos:", err)
-    }
+	var err error
+	DSN := user + ":" + pass + "@tcp(" + host + ":" + port + ")/" + dbname
+	DB, err = sql.Open(GBD, DSN)
+	if err != nil {
+		log.Fatal("Error al conectar con la base de datos:", err)
+	}
+	DBType = "mysql"
 
-    // Verificar si la conexión es exitosa
-    err = DB.Ping()
-    if err != nil {
-        log.Fatal("No se puede establecer la conexión con la base de datos:", err)
-    }
+	err = DB.Ping()
+	if err != nil {
+		log.Fatal("No se puede establecer la conexión con la base de datos:", err)
+	}
 }
+
 
 // Inicializa la conexión a la base de datos externa (Supabase)
 func InitDBSupabase(connStr string) {
@@ -34,9 +36,19 @@ func InitDBSupabase(connStr string) {
         log.Fatal("Error al conectar con la base de datos:", err)
     }
 
+    DBType = "postgres"
+
     // Verificar si la conexión es exitosa
     err = DB.Ping()
     if err != nil {
         log.Fatal("No se puede establecer la conexión con la base de datos:", err)
     }
+}
+
+// Retorna el marcador de posición correcto
+func getPlaceholder(i int) string {
+	if DBType == "postgres" {
+		return fmt.Sprintf("$%d", i)
+	}
+	return "?"
 }
