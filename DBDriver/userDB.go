@@ -24,7 +24,8 @@ func CreateUser(table []string, idField, username, password string) error {
 
 	id, _ := util.ConvertToInt(idField)
 
-	query := fmt.Sprintf("INSERT INTO %s (%s, %s, %s) VALUES (?, ?, ?)", table[0], table[1], table[2], table[3])
+	query := fmt.Sprintf("INSERT INTO %s (%s, %s, %s) VALUES ($1, $2, $3)", table[0], table[1], table[2], table[3])
+
 	_, err = DB.Exec(query, id, username, hashedPassword)
 	if err != nil {
 		return fmt.Errorf("error creando usuario: %v", err)
@@ -55,7 +56,8 @@ func AuthenticateUser(table []string, username, password string) (bool, error) {
 // Obtener usuario por nombre de usuario
 func GetUserByUsername(table []string, username string) (User, error) {
 	var user User
-	query := fmt.Sprintf("SELECT %s, %s, %s FROM %s WHERE %s = ?", table[1], table[2], table[3], table[0], table[2])
+	query := fmt.Sprintf("SELECT %s, %s, %s FROM %s WHERE %s = $1", table[1], table[2], table[3], table[0], table[2])
+
 	row := DB.QueryRow(query, username)
 
 	err := row.Scan(&user.ID, &user.Username, &user.Password)
@@ -71,7 +73,7 @@ func GetUserByUsername(table []string, username string) (User, error) {
 // Obtener usuario por ID
 func GetUserByID(table string, id int) (User, error) {
 	var user User
-	query := fmt.Sprintf("SELECT id, username, password FROM %s WHERE id = ?", table)
+	query := fmt.Sprintf("SELECT id, username, password FROM %s WHERE id = $1", table)
 	row := DB.QueryRow(query, id)
 
 	err := row.Scan(&user.ID, &user.Username, &user.Password)
