@@ -28,7 +28,7 @@ func CreateUser(table []string, idField, username, password string) error {
 	getPlaceholder(1), getPlaceholder(2), getPlaceholder(3))
 
 
-	_, err = DB.Exec(query, id, username, string(hashedPassword))
+	_, err = DBConn.Exec(query, id, username, string(hashedPassword))
 	if err != nil {
 		return fmt.Errorf("error creando usuario: %v", err)
 	}
@@ -60,7 +60,7 @@ func GetUserByUsername(table []string, username string) (User, error) {
 	var user User
 	query := fmt.Sprintf("SELECT %s, %s, %s FROM %s WHERE %s = %s", table[1], table[2], table[3], table[0], table[2], getPlaceholder(1))
 
-	row := DB.QueryRow(query, username)
+	row := DBConn.QueryRow(query, username)
 
 	err := row.Scan(&user.ID, &user.Username, &user.Password)
 	if err != nil {
@@ -76,7 +76,7 @@ func GetUserByUsername(table []string, username string) (User, error) {
 func GetUserByID(table string, id int) (User, error) {
 	var user User
 	query := fmt.Sprintf("SELECT id, username, password FROM %s WHERE id = %s", table, getPlaceholder(1))
-	row := DB.QueryRow(query, id)
+	row := DBConn.QueryRow(query, id)
 
 	err := row.Scan(&user.ID, &user.Username, &user.Password)
 	if err != nil {
@@ -98,7 +98,7 @@ func UpdateUser(table string, id int, username, password string) error {
 
 	query := fmt.Sprintf("UPDATE %s SET username = %s, password = %s WHERE id = %s", table,
 		getPlaceholder(1), getPlaceholder(2), getPlaceholder(3))
-	_, err = DB.Exec(query, username, hashedPassword, id)
+	_, err = DBConn.Exec(query, username, hashedPassword, id)
 	if err != nil {
 		return fmt.Errorf("error actualizando usuario: %v", err)
 	}
@@ -109,7 +109,7 @@ func UpdateUser(table string, id int, username, password string) error {
 func DeleteUser(table string, id int) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id = %s", table, getPlaceholder(1))
 
-	_, err := DB.Exec(query, id)
+	_, err := DBConn.Exec(query, id)
 	if err != nil {
 		return fmt.Errorf("error eliminando usuario: %v", err)
 	}
@@ -120,7 +120,7 @@ func DeleteUser(table string, id int) error {
 func GetAllUsers(table string) ([]User, error) {
 	var users []User
 	query := fmt.Sprintf("SELECT id, username, password FROM %s", table)
-	rows, err := DB.Query(query)
+	rows, err := DBConn.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("error obteniendo usuarios: %v", err)
 	}
@@ -149,7 +149,7 @@ func UpdatePassword(table string, id int, newPassword string) error {
 	query := fmt.Sprintf("UPDATE %s SET password = %s WHERE id = %s", table,
 	getPlaceholder(1), getPlaceholder(2))
 
-	_, err = DB.Exec(query, hashedPassword, id)
+	_, err = DBConn.Exec(query, hashedPassword, id)
 	if err != nil {
 		return fmt.Errorf("error actualizando contraseña: %v", err)
 	}
